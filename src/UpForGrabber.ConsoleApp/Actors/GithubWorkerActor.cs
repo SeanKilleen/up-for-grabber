@@ -111,6 +111,24 @@ namespace UpForGrabber.ConsoleApp.Actors
                     _logger.Info("No PRs found for page {pageNumber} of repo ID {repoFullName} -- not taking further action", m.StartingPageNumber, m.RepoFullName);
                 }
             });
+
+            ReceiveAsync<Messages.RetrieveRepos>(async msg =>
+            {
+                var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName);
+                _logger.Info("Retrieved {TotalRepoCount} total repos for '{OrgName} org", repos.Count, msg.OrgName);
+                var eligibleRepos = repos.Where(x =>
+                    !x.Private &&
+                    !x.Archived &&
+                    x.HasIssues
+                ).ToList();
+
+                _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for '{OrgName}'", eligibleRepos.Count, msg.OrgName);
+
+                if (eligibleRepos.Any())
+                {
+                    Sender.Tell(new Messages.ReposForOrganization(eligibleRepos));
+                }
+            });
         }
 
         private void Paused()

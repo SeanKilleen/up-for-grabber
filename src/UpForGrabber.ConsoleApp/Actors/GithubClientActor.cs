@@ -57,6 +57,12 @@ namespace UpForGrabber.ConsoleApp.Actors
                 }
             });
 
+            Receive<Messages.RetrieveRepos>(msg =>
+            {
+                _numberOfGithubRequestsMade++;
+                _githubWorkerActor.Forward(msg);
+            });
+
             _logger.Info("GithubClientActor created and sitting at {clientActorPath}", Self.Path);
             _logger.Info("Scheduling messages every 5 seconds to tell us how many requests we've made so far.", Self.Path);
             Context.System.Scheduler.ScheduleTellRepeatedly(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5), Self, new Messages.LogRequestsMadeSoFar(), Self);
