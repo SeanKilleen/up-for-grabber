@@ -14,7 +14,8 @@ namespace UpForGrabber.ConsoleApp
 
         public static Dictionary<string, string> GetPeopleAndTokens()
         {
-            var tokenFromConfig = new ConfigurationBuilder().AddEnvironmentVariables().Build()[Constants.GITHUB_TOKEN_ENV_VAR_NAME];
+            var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            var tokenFromConfig = config[Constants.GITHUB_TOKEN_ENV_VAR_NAME];
 
             return new Dictionary<string, string>
             {
