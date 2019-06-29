@@ -42,7 +42,7 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 var apiOptions = new ApiOptions
                 {
-                    PageSize = Constants.PR_PAGE_SIZE,
+                    PageSize = Constants.DEFAULT_PAGE_SIZE,
                     StartPage = m.PageNumber,
                     PageCount = 1
                 };
@@ -89,7 +89,7 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 var apiOptions = new ApiOptions
                 {
-                    PageSize = Constants.PR_PAGE_SIZE,
+                    PageSize = Constants.DEFAULT_PAGE_SIZE,
                     StartPage = m.StartingPageNumber,
                     PageCount = 1
                 };
@@ -115,20 +115,31 @@ namespace UpForGrabber.ConsoleApp.Actors
             ReceiveAsync<Messages.RetrieveRepos>(async msg =>
             {
                 _logger.Info("Retrieving repos for {OrgName} org", msg.OrgName);
-                var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName);
-                _logger.Info("Retrieved {TotalRepoCount} total repos for '{OrgName} org", repos.Count, msg.OrgName);
-                var eligibleRepos = repos.Where(x =>
-                    !x.Private &&
-                    !x.Archived &&
-                    x.HasIssues
-                ).ToList();
 
-                _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for '{OrgName}'", eligibleRepos.Count, msg.OrgName);
-
-                if (eligibleRepos.Any())
+                int lastResultCount;
+                var page = 1;
+                do
                 {
-                    Sender.Tell(new Messages.ReposForOrganization(eligibleRepos));
-                }
+                    var options = new ApiOptions
+                    {
+                        StartPage = 1,
+                        PageCount = page,
+                        PageSize = Constants.DEFAULT_PAGE_SIZE
+                    };
+                    var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName, options);
+
+                    _logger.Info("Retrieved {TotalRepoCount} total repos for '{OrgName} org on page {PageNumber}", repos.Count, msg.OrgName, page);
+                    var eligibleRepos = repos.Where(x =>
+                        !x.Private &&
+                        !x.Archived &&
+                        x.HasIssues
+                    ).ToList();
+
+                    _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for '{OrgName}'on page {PageNumber}", eligibleRepos.Count, msg.OrgName, page);
+
+                    page++;
+                    lastResultCount = repos.Count;
+                } while (lastResultCount != 0);
             });
         }
 
