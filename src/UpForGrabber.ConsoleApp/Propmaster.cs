@@ -6,5 +6,6 @@ namespace UpForGrabber.ConsoleApp
     public static class Propmaster
     {
         public static Props GithubWorkerActor(string token) => Props.Create(() => new GithubWorkerActor(Constants.APP_NAME, token));
+        public static Props GithubClientActor() => Props.Create<GithubClientActor>();
     }
 }

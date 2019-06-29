@@ -10,6 +10,7 @@ namespace UpForGrabber.ConsoleApp
     {
         static async Task Main(string[] args)
         {
+            const string ORG_NAME = "microsoft"; //TODO: Extract into setting
             var logger = new LoggerConfiguration()
                 .WriteTo.ColoredConsole()
                 .WriteTo.Seq("http://localhost:5341")
@@ -18,9 +19,7 @@ namespace UpForGrabber.ConsoleApp
             Log.Logger = logger;
 
             var actorSystem = ActorSystem.Create(Constants.APP_NAME, "akka { loglevel=INFO,  loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}");
-
-            var apiActorProps = Props.Create<GithubClientActor>();
-            var githubApiActor = actorSystem.ActorOf(apiActorProps, Constants.ActorNames.GITHUB_CLIENT_ACTOR_NAME);
+            var githubApiActor = actorSystem.ActorOf(Propmaster.GithubClientActor(), Constants.ActorNames.GITHUB_CLIENT_ACTOR_NAME);
 
             await actorSystem.WhenTerminated;
         }
