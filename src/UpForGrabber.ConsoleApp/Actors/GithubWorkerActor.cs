@@ -114,6 +114,7 @@ namespace UpForGrabber.ConsoleApp.Actors
 
             ReceiveAsync<Messages.RetrieveRepos>(async msg =>
             {
+                _logger.Info("Retrieving repos for {OrgName} org", msg.OrgName);
                 var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName);
                 _logger.Info("Retrieved {TotalRepoCount} total repos for '{OrgName} org", repos.Count, msg.OrgName);
                 var eligibleRepos = repos.Where(x =>
