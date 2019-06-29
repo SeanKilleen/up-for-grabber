@@ -6,16 +6,6 @@ namespace UpForGrabber.ConsoleApp
 {
     public static class Messages
     {
-        public class BuildPortfolioFor
-        {
-            public string GithubOrgName { get; }
-
-            public BuildPortfolioFor(string githubOrgName)
-            {
-                GithubOrgName = githubOrgName;
-            }
-        }
-
         public class ContributorInfo
         {
             public string RepoFullName { get; }
