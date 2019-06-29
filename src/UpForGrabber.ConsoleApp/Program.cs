@@ -6,12 +6,15 @@ namespace UpForGrabber.ConsoleApp
 {
     class Program
     {
-        static async Task  Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("Hello World!");
 
-            var system = ActorSystem.Create("upforgrabber");
-            var githubApiActor = system.ActorOf(Props.Create<GitHubAPIActor>(), "githubApi");
+            const string SYSTEM_NAME = "upforgrabber";
+            var system = ActorSystem.Create(SYSTEM_NAME);
+
+            var apiActorProps = Props.Create<GitHubAPIActor>();
+            var githubApiActor = system.ActorOf(apiActorProps, "githubApi");
 
             await system.WhenTerminated;
         }
