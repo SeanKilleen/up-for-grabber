@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Serilog;
+using UpForGrabber.ConsoleApp.Actors;
 
 namespace UpForGrabber.ConsoleApp
 {
@@ -8,15 +10,19 @@ namespace UpForGrabber.ConsoleApp
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var logger = new LoggerConfiguration()
+                .WriteTo.ColoredConsole()
+                .WriteTo.Seq("http://localhost:5341")
+                .CreateLogger();
 
-            const string SYSTEM_NAME = "upforgrabber";
-            var system = ActorSystem.Create(SYSTEM_NAME);
+            Log.Logger = logger;
 
-            var apiActorProps = Props.Create<GitHubAPIActor>();
-            var githubApiActor = system.ActorOf(apiActorProps, "githubApi");
+            var actorSystem = ActorSystem.Create(Constants.APP_NAME, "akka { loglevel=INFO,  loggers=[\"Akka.Logger.Serilog.SerilogLogger, Akka.Logger.Serilog\"]}");
 
-            await system.WhenTerminated;
+            var apiActorProps = Props.Create<GithubClientActor>();
+            var githubApiActor = actorSystem.ActorOf(apiActorProps, Constants.ActorNames.GITHUB_CLIENT_ACTOR_NAME);
+
+            await actorSystem.WhenTerminated;
         }
     }
 }
