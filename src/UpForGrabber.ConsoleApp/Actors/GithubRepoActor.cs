@@ -43,6 +43,39 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 _githubClient.Tell(new Messages.Messages.GetIssueCountPerLabel(_repoInfo.RepoId, _repoInfo.RepoFullName, _upForGrabsLabels));
             });
+
+            Receive<Messages.Messages.LabelsAndIssuesResponse>(msg => {
+                var countsPerLabel = msg.LabelsAndIssues.ToDictionary(k => k.Key, v => v.Value.Count);
+                var mostRecentIssuePerLabel = msg.LabelsAndIssues.ToDictionary(k => k.Key, v => SelectLatestDate(v.Value));
+
+                var totalUFGIssueCount = countsPerLabel.Sum(x=>x.Value);
+                var totalUFGLabelCount = countsPerLabel.Count;
+
+                var mostRecentUfgIssue = mostRecentIssuePerLabel.OrderByDescending(x=>x.Value).First().Value; 
+                var dateDistnce = (DateTimeOffset.UtcNow - mostRecentUfgIssue).Days;
+
+                _logger.Info("Counts per label for {RepoName}: {CountsPerLabel}", _repoInfo.RepoFullName, countsPerLabel);
+                _logger.Info("LatestIssue per label for {RepoName}: {MostRecentIssuePerLabel}", _repoInfo.RepoFullName, mostRecentIssuePerLabel);
+
+                _logger.Info("Repo report: {RepoName} has {StarCount} stars. It has {TotalOpenIssues} open issues, {TotalUFGIssueCount} of which exist across {LabelCount} up-for-grabs style labels. The most recent up-for-grabs issue was on {MostRecentUpForGrabsDate}, {DaysAgo} days ago.",
+                    _repoInfo.RepoFullName, _repoInfo.StarCount, _repoInfo.OpenIssueCount, totalUFGIssueCount, totalUFGLabelCount, mostRecentUfgIssue, dateDistnce
+                );
+            });
+        }
+
+        private DateTimeOffset SelectLatestDate(List<IssueInfo> items){
+            return items
+                .Select(x=> {
+                    if (x.Updated) 
+                    {
+                        return x.UpdatedAt.Value;
+                    } 
+                    else 
+                    {
+                        return x.CreatedAt;
+                    }})
+                .OrderByDescending(x => x)
+                .First();
         }
 
         private static bool LabelIsPotentiallyUpForGrabs(string name)

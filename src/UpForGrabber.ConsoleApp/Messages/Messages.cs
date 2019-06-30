@@ -62,5 +62,14 @@ namespace UpForGrabber.ConsoleApp.Messages
                 RepoFullName = repoFullName;
             }
         }
+
+        public class LabelsAndIssuesResponse
+        {
+            public IReadOnlyDictionary<string, List<IssueInfo>> LabelsAndIssues {get;}
+            public LabelsAndIssuesResponse (Dictionary<string, List<IssueInfo>> labelsAndIssues)
+            {
+                LabelsAndIssues = labelsAndIssues;
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 # up-for-grabber
+
 A tool to search an organization for up-for-grabs style repositories to recommend to up-for-grabs.net.
 
 [![Build Status](https://dev.azure.com/sjkilleen/up-for-grabber/_apis/build/status/SeanKilleen.up-for-grabber?branchName=master)](https://dev.azure.com/sjkilleen/up-for-grabber/_build/latest?definitionId=2&branchName=master)
@@ -23,7 +24,9 @@ A tool to search an organization for up-for-grabs style repositories to recommen
 
 You'll need to:
 
-* Generate a GitHub token
-* Set an environment variable called `UPFORGRABBER_GITHUB_TOKEN` to the token you generated.
+* Generate a GitHub token. NOTE: This works best if you have more than one GitHub token because they can operate in parallel and will make it less likely for you to hit an API rate limit. If you do get close to the rate limit, the app will pause & resume.
+* It's also a good idea to install [Seq](http://getseq.net), a fantastic application for looking through the log output that we're generating. If you install Seq with the default parameters, we'll output right to it on `localhost:5341`.
+* Set an environment variable called `UPFORGRABBER_GITHUB_TOKEN` to the token(s) you generated; if more than one, comma-separate them.
 * Set the constant variable for the org you want to check (we'll extract this to a setting at some point)
-* Build / run the console app.
+* Build / run the console app. Kill it off when it looks like it's done.
+* Check out the logging output in Seq, where you can query it for numbers etc.
