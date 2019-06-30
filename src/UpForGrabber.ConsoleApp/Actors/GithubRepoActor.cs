@@ -47,8 +47,19 @@ namespace UpForGrabber.ConsoleApp.Actors
             Receive<Messages.Messages.LabelsAndIssuesResponse>(msg => {
                 var countsPerLabel = msg.LabelsAndIssues.ToDictionary(k => k.Key, v => v.Value.Count);
                 var mostRecentIssuePerLabel = msg.LabelsAndIssues.ToDictionary(k => k.Key, v => SelectLatestDate(v.Value));
-                // TODO: Most recent label updated and when
-                // TODO: Number of Stars & 
+
+                var totalUFGIssueCount = countsPerLabel.Sum(x=>x.Value);
+                var totalUFGLabelCount = countsPerLabel.Count;
+
+                var mostRecentUfgIssue = mostRecentIssuePerLabel.OrderByDescending(x=>x.Value).First().Value; 
+                var dateDistnce = (DateTimeOffset.UtcNow - mostRecentUfgIssue).Days;
+
+                _logger.Info("Counts per label for {RepoName}: {CountsPerLabel}", _repoInfo.RepoFullName, countsPerLabel);
+                _logger.Info("LatestIssue per label for {RepoName}: {MostRecentIssuePerLabel}", _repoInfo.RepoFullName, mostRecentIssuePerLabel);
+
+                _logger.Info("Repo report: {RepoName} has {StarCount} stars. It has {TotalOpenIssues}, and {TotalUFGIssueCount} issues across {LabelCount} up-for-grabs style labels. The most recent up-for-grabs issue was on {MostRecentUpForGrabsDate}, {DaysAgo} days ago.",
+                    _repoInfo.RepoFullName, _repoInfo.StarCount, _repoInfo.OpenIssueCount, totalUFGIssueCount, totalUFGLabelCount, mostRecentUfgIssue, dateDistnce
+                );
             });
         }
 
