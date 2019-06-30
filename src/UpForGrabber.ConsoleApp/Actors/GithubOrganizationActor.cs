@@ -32,7 +32,7 @@ namespace UpForGrabber.ConsoleApp.Actors
             {
                 foreach (var repo in msg.Repositories)
                 {
-                    Context.ActorOf(Propmaster.GithubRepoActor(repo));
+                    Context.ActorOf(Propmaster.GithubRepoActor(repo), repo.RepoName);
                 }
             });
 
