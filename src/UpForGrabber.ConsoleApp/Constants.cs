@@ -11,15 +11,13 @@ namespace UpForGrabber.ConsoleApp
         public const int GITHUB_CLIENT_COUNT = 1;
         public const string ORG_NAME_TO_CHECK = "microsoft"; //TODO: Extract to settings
 
-        public static Dictionary<string, string> GetPeopleAndTokens()
+        public static List<string> GetTokens()
         {
             var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            var tokenFromConfig = config[Constants.GITHUB_TOKEN_ENV_VAR_NAME];
+            var tokensFromConfig = config[Constants.GITHUB_TOKEN_ENV_VAR_NAME];
+            var tokens = tokensFromConfig.Split(',', System.StringSplitOptions.RemoveEmptyEntries);
 
-            return new Dictionary<string, string>
-            {
-                { "me", tokenFromConfig }
-            };
+            return new List<string>(tokens);
         }
 
         public class ActorNames

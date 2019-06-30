@@ -19,7 +19,7 @@ namespace UpForGrabber.ConsoleApp.Actors
         {
             _logger = Context.GetLogger();
 
-            var actorsList = Constants.GetPeopleAndTokens().Select(pt => Context.ActorOf(Propmaster.GithubWorkerActor(pt.Value), pt.Key)).ToList();
+            var actorsList = Constants.GetTokens().Select(pt => Context.ActorOf(Propmaster.GithubWorkerActor(pt))).ToList();
             _githubWorkerActor = Context.ActorOf(Props.Empty.WithRouter(routerConfig: new RoundRobinGroup(actorsList.Select(x=>x.Path.ToString()).ToList())), "githubWorker");
 
             Receive<Messages.Messages.LogRequestsMadeSoFar>(m =>
