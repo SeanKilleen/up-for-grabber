@@ -30,7 +30,10 @@ namespace UpForGrabber.ConsoleApp.Actors
 
             Receive<Messages.Messages.ReposForOrganization>(msg =>
             {
-
+                foreach (var repo in msg.Repositories)
+                {
+                    Context.ActorOf(Propmaster.GithubRepoActor(repo));
+                }
             });
 
         }
