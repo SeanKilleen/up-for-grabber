@@ -72,7 +72,10 @@ namespace UpForGrabber.ConsoleApp.Actors
                         .Where(issue => issue.Labels.Any(labelItem => labelItem.Name.Equals(label, StringComparison.InvariantCultureIgnoreCase)))
                         .Select(issue => new IssueInfo(issue.Id, issue.UpdatedAt, issue.Url, issue.ClosedAt, issue.CreatedAt)).ToList();
 
-                    result[label] = issueInfos;
+                    if (issueInfos.Any())
+                    {
+                        result[label] = issueInfos;
+                    }
                 }
 
                 var totalCount = result.Sum(x=>x.Value.Count);
