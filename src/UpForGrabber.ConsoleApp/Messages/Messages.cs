@@ -25,8 +25,8 @@ namespace UpForGrabber.ConsoleApp.Messages
 
         public class ReposForOrganization
         {
-            public IReadOnlyList<Repository> Repositories { get; }
-            public ReposForOrganization(List<Repository> repos)
+            public IReadOnlyList<BasicRepoInfo> Repositories { get; }
+            public ReposForOrganization(List<BasicRepoInfo> repos)
             {
                 Repositories = repos;
             }

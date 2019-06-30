@@ -36,9 +36,10 @@ namespace UpForGrabber.ConsoleApp.Actors
                     !x.Private &&
                     !x.Archived &&
                     x.HasIssues
-                ).ToList();
+                ).Select(x=>new BasicRepoInfo(x.FullName, x.Id)).ToList();
 
                 _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for {OrgName} on page", eligibleRepos.Count, msg.OrgName);
+                Sender.Tell(new Messages.Messages.ReposForOrganization(eligibleRepos));
                 CheckApiLimits(_apiClient.GetLastApiInfo());
             });
         }

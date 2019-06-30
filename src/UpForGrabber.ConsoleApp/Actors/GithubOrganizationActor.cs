@@ -1,4 +1,5 @@
-﻿using Akka.Actor;
+﻿using System.Runtime.CompilerServices;
+using Akka.Actor;
 
 namespace UpForGrabber.ConsoleApp.Actors
 {
@@ -15,12 +16,23 @@ namespace UpForGrabber.ConsoleApp.Actors
             _orgName = orgNameToCheck;
             _githubClient = Context.ActorSelection("/user/" + Constants.ActorNames.GITHUB_CLIENT_ACTOR_NAME);
 
+            Become(Normal);
+
+            Self.Tell(new Messages.Messages.RetrieveRepos(_orgName));
+        }
+
+        private void Normal()
+        {
             Receive<Messages.Messages.RetrieveRepos>(msg =>
             {
                 _githubClient.Tell(msg);
             });
 
-            Self.Tell(new Messages.Messages.RetrieveRepos(_orgName));
+            Receive<Messages.Messages.ReposForOrganization>(msg =>
+            {
+
+            });
+
         }
     }
 }
