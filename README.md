@@ -1,6 +1,8 @@
 # up-for-grabber
 A tool to search an organization for up-for-grabs style repositories to recommend to up-for-grabs.net.
 
+[![Build Status](https://dev.azure.com/sjkilleen/up-for-grabber/_apis/build/status/SeanKilleen.up-for-grabber?branchName=master)](https://dev.azure.com/sjkilleen/up-for-grabber/_build/latest?definitionId=2&branchName=master)
+
 ## How the tool works / will work (logic-wise)
 
 * Gets all the repositories for an organization that are active, not archived, etc.
