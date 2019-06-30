@@ -74,7 +74,7 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                     if (issueInfos.Any())
                     {
-                        result[label] = issueInfos;
+                        result.Add(label, issueInfos);
                     }
                 }
 
