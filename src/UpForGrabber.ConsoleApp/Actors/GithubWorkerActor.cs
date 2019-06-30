@@ -42,6 +42,15 @@ namespace UpForGrabber.ConsoleApp.Actors
                 CheckApiLimits(_apiClient.GetLastApiInfo());
                 Sender.Tell(new Messages.Messages.ReposForOrganization(eligibleRepos));
             });
+
+            ReceiveAsync<Messages.Messages.RetrieveLabels>(async msg =>
+            {
+                var labels = await _apiClient.Issue.Labels.GetAllForRepository(msg.RepoId);
+                var selectedLabelInfo = labels.Select(x => x.Name).ToList();
+
+                CheckApiLimits(_apiClient.GetLastApiInfo());
+                Sender.Tell(new Messages.Messages.LabelsForRepo(selectedLabelInfo));
+            });
         }
 
         private void Paused()

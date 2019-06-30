@@ -31,5 +31,23 @@ namespace UpForGrabber.ConsoleApp.Messages
                 Repositories = repos;
             }
         }
+
+        public class RetrieveLabels
+        {
+            public long RepoId { get; }
+            public RetrieveLabels(long repoId)
+            {
+                RepoId = repoId;
+            }
+        }
+
+        public class LabelsForRepo
+        {
+            public IReadOnlyList<string> Labels { get; }
+            public LabelsForRepo(List<string> labels)
+            {
+                Labels = labels;
+            }
+        }
     }
 }
