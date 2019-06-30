@@ -128,14 +128,14 @@ namespace UpForGrabber.ConsoleApp.Actors
                     };
                     var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName, options);
 
-                    _logger.Info("Retrieved {TotalRepoCount} total repos for '{OrgName} org on page {PageNumber}", repos.Count, msg.OrgName, page);
+                    _logger.Info("Retrieved {TotalRepoCount} total repos for {OrgName} org on page {PageNumber}", repos.Count, msg.OrgName, page);
                     var eligibleRepos = repos.Where(x =>
                         !x.Private &&
                         !x.Archived &&
                         x.HasIssues
                     ).ToList();
 
-                    _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for '{OrgName}'on page {PageNumber}", eligibleRepos.Count, msg.OrgName, page);
+                    _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for {OrgName} on page {PageNumber}", eligibleRepos.Count, msg.OrgName, page);
 
                     page++;
                     lastResultCount = repos.Count;
