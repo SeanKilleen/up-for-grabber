@@ -127,6 +127,7 @@ namespace UpForGrabber.ConsoleApp.Actors
                 ).ToList();
 
                 _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for {OrgName} on page", eligibleRepos.Count, msg.OrgName);
+                CheckApiLimits(_apiClient.GetLastApiInfo());
             });
         }
 
