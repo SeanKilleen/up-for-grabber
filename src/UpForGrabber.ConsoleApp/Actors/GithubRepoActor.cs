@@ -23,7 +23,6 @@ namespace UpForGrabber.ConsoleApp.Actors
             _logger.Info("Created actor at {Path}", Self.Path);
 
             _githubClient.Tell(new Messages.Messages.RetrieveLabels(_repoInfo.RepoId));
-            // TODO: Tell self to start examining labels
         }
 
         private void Normal()
@@ -41,6 +40,8 @@ namespace UpForGrabber.ConsoleApp.Actors
                 _logger.Info("Found {MatchingLabelCount} potential up-for-grabs labels for {RepoName}: {LabelsList}", matchingLabels.Count, _repoInfo.RepoFullName, matchingLabels);
 
                 _upForGrabsLabels = matchingLabels;
+
+                _githubClient.Tell(new Messages.Messages.GetIssueCountPerLabel(_repoInfo.RepoId, _upForGrabsLabels));
             });
         }
 

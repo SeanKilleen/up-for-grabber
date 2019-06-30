@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Akka.Actor;
 using Akka.Event;
+using Akka.Util.Internal;
 using Octokit;
 
 namespace UpForGrabber.ConsoleApp.Actors
@@ -50,6 +52,26 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 CheckApiLimits(_apiClient.GetLastApiInfo());
                 Sender.Tell(new Messages.Messages.LabelsForRepo(selectedLabelInfo));
+            });
+
+            ReceiveAsync<Messages.Messages.GetIssueCountPerLabel>(async msg =>
+            {
+                var req = new RepositoryIssueRequest();
+                msg.LabelsToCheck.ForEach(label => req.Labels.Add(label));
+
+                var issuesForLabels = await _apiClient.Issue.GetAllForRepository(msg.RepoId, req);
+
+                var result = new Dictionary<string, int>();
+
+                foreach (var label in msg.LabelsToCheck)
+                {
+                    var count = issuesForLabels.Count(x => x.Labels.Any(labelItem => labelItem.Name.Equals(label, StringComparison.InvariantCultureIgnoreCase)));
+                    result.Add(label, count);
+                }
+
+                _logger.Info("Found {IssueCount} issues across up for grabs labels for {RepoId}", result.Values.Sum(), msg.RepoId);
+
+                CheckApiLimits(_apiClient.GetLastApiInfo());
             });
         }
 

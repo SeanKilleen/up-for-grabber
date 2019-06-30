@@ -9,7 +9,7 @@ namespace UpForGrabber.ConsoleApp
         public const int DEFAULT_PAGE_SIZE = 200;
         public const string APP_NAME = "Up-for-grabber";
         public const int GITHUB_CLIENT_COUNT = 1;
-        public const string ORG_NAME_TO_CHECK = "microsoft"; //TODO: Extract to settings
+        public const string ORG_NAME_TO_CHECK = "excellalabs"; //TODO: Extract to settings
 
         public static Dictionary<string, string> GetPeopleAndTokens()
         {

@@ -49,5 +49,16 @@ namespace UpForGrabber.ConsoleApp.Messages
                 Labels = labels;
             }
         }
+
+        public class GetIssueCountPerLabel
+        {
+            public IReadOnlyList<string> LabelsToCheck { get; }
+            public long RepoId { get; }
+            public GetIssueCountPerLabel(long repoId, List<string> upForGrabsLabels)
+            {
+                RepoId = repoId;
+                LabelsToCheck = upForGrabsLabels;
+            }
+        }
     }
 }
