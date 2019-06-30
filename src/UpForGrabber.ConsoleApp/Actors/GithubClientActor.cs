@@ -12,7 +12,7 @@ namespace UpForGrabber.ConsoleApp.Actors
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly ILoggingAdapter _logger;
         private readonly IActorRef _githubWorkerActor;
-        // ReSharper enablePrivateFieldCanBeConvertedToLocalVariable
+        // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
         private int _numberOfGithubRequestsMade;
 
         public GithubClientActor()

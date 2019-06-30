@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Akka.Actor;
+﻿using Akka.Actor;
 
 namespace UpForGrabber.ConsoleApp.Actors
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class GithubOrganizationActor : ReceiveActor
     {
-        private ActorSelection _githubClient;
-        private string _orgName; 
+        private readonly ActorSelection _githubClient;
+        private readonly string _orgName; 
 
         public GithubOrganizationActor(string orgNameToCheck)
         {
