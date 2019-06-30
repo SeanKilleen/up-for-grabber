@@ -57,7 +57,7 @@ namespace UpForGrabber.ConsoleApp.Actors
                 _logger.Info("Counts per label for {RepoName}: {CountsPerLabel}", _repoInfo.RepoFullName, countsPerLabel);
                 _logger.Info("LatestIssue per label for {RepoName}: {MostRecentIssuePerLabel}", _repoInfo.RepoFullName, mostRecentIssuePerLabel);
 
-                _logger.Info("Repo report: {RepoName} has {StarCount} stars. It has {TotalOpenIssues}, and {TotalUFGIssueCount} issues across {LabelCount} up-for-grabs style labels. The most recent up-for-grabs issue was on {MostRecentUpForGrabsDate}, {DaysAgo} days ago.",
+                _logger.Info("Repo report: {RepoName} has {StarCount} stars. It has {TotalOpenIssues} open issues, {TotalUFGIssueCount} of which exist across {LabelCount} up-for-grabs style labels. The most recent up-for-grabs issue was on {MostRecentUpForGrabsDate}, {DaysAgo} days ago.",
                     _repoInfo.RepoFullName, _repoInfo.StarCount, _repoInfo.OpenIssueCount, totalUFGIssueCount, totalUFGLabelCount, mostRecentUfgIssue, dateDistnce
                 );
             });
