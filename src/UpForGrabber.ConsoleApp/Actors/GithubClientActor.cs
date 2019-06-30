@@ -3,14 +3,16 @@ using System.Linq;
 using Akka.Actor;
 using Akka.Event;
 using Akka.Routing;
-using Akka.Util.Internal;
 
 namespace UpForGrabber.ConsoleApp.Actors
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class GithubClientActor : ReceiveActor
     {
+        // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly ILoggingAdapter _logger;
         private readonly IActorRef _githubWorkerActor;
+        // ReSharper enablePrivateFieldCanBeConvertedToLocalVariable
         private int _numberOfGithubRequestsMade;
 
         public GithubClientActor()
@@ -18,7 +20,7 @@ namespace UpForGrabber.ConsoleApp.Actors
             _logger = Context.GetLogger();
 
             var actorsList = Constants.GetPeopleAndTokens().Select(pt => Context.ActorOf(Propmaster.GithubWorkerActor(pt.Value), pt.Key)).ToList();
-            _githubWorkerActor = Context.ActorOf(Props.Empty.WithRouter(new RoundRobinGroup(actorsList)), "githubWorker");
+            _githubWorkerActor = Context.ActorOf(Props.Empty.WithRouter(routerConfig: new RoundRobinGroup(actorsList.Select(x=>x.Path.ToString()).ToList())), "githubWorker");
 
             Receive<Messages.LogRequestsMadeSoFar>(m =>
             {
