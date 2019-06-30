@@ -122,8 +122,8 @@ namespace UpForGrabber.ConsoleApp.Actors
                 {
                     var options = new ApiOptions
                     {
-                        StartPage = 1,
-                        PageCount = page,
+                        StartPage = page,
+                        PageCount = 1,
                         PageSize = Constants.DEFAULT_PAGE_SIZE
                     };
                     var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName, options);
