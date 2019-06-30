@@ -37,7 +37,8 @@ namespace UpForGrabber.ConsoleApp.Actors
                 var eligibleRepos = repos.Where(x =>
                     !x.Private &&
                     !x.Archived &&
-                    x.HasIssues
+                    x.HasIssues &&
+                    RepositoryIsUpdatedWithin90Days(x)
                 ).Select(x=>new BasicRepoInfo(x.FullName, x.Name, x.Id, x.StargazersCount, x.ForksCount, x.OpenIssuesCount, x.UpdatedAt)).ToList();
 
                 _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for {OrgName} on page", eligibleRepos.Count, msg.OrgName);
@@ -58,6 +59,8 @@ namespace UpForGrabber.ConsoleApp.Actors
             {
                 var req = new RepositoryIssueRequest();
                 msg.LabelsToCheck.ForEach(label => req.Labels.Add(label));
+                req.Filter = IssueFilter.All;
+                req.State = ItemStateFilter.All;
 
                 var issuesForLabels = await _apiClient.Issue.GetAllForRepository(msg.RepoId, req);
 
@@ -73,6 +76,15 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 CheckApiLimits(_apiClient.GetLastApiInfo());
             });
+        }
+
+        private static bool RepositoryIsUpdatedWithin90Days(Repository x)
+        {
+            var utcNow = DateTimeOffset.UtcNow;
+            var ninetyDays = TimeSpan.FromDays(90);
+
+            return (utcNow - x.UpdatedAt) < ninetyDays
+                   || (utcNow - x.PushedAt) < ninetyDays;
         }
 
         private void Paused()
