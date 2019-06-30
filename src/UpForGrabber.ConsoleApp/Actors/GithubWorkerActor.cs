@@ -117,36 +117,16 @@ namespace UpForGrabber.ConsoleApp.Actors
             {
                 _logger.Info("Retrieving repos for {OrgName} org", msg.OrgName);
 
-                var results = new List<Repository>();
+                var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName);
 
-                int lastResultCount;
-                var page = 1;
-                do
-                {
-                    var options = new ApiOptions
-                    {
-                        StartPage = page,
-                        PageCount = 1,
-                        PageSize = Constants.DEFAULT_PAGE_SIZE
-                    };
-                    var repos = await _apiClient.Repository.GetAllForOrg(msg.OrgName, options);
+                _logger.Info("Retrieved {TotalRepoCount} total repos for {OrgName} org on page", repos.Count, msg.OrgName);
+                var eligibleRepos = repos.Where(x =>
+                    !x.Private &&
+                    !x.Archived &&
+                    x.HasIssues
+                ).ToList();
 
-                    _logger.Info("Retrieved {TotalRepoCount} total repos for {OrgName} org on page {PageNumber}", repos.Count, msg.OrgName, page);
-                    var eligibleRepos = repos.Where(x =>
-                        !x.Private &&
-                        !x.Archived &&
-                        x.HasIssues
-                    ).ToList();
-
-                    _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for {OrgName} on page {PageNumber}", eligibleRepos.Count, msg.OrgName, page);
-
-                    results.AddRange(eligibleRepos);
-
-                    page++;
-                    lastResultCount = repos.Count;
-                } while (lastResultCount != 0);
-
-                _logger.Info("total eligible repos: {TotalEligibleRepoCount}", results.Count);
+                _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for {OrgName} on page", eligibleRepos.Count, msg.OrgName);
             });
         }
 
