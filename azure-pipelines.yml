@@ -16,5 +16,5 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
+- script: dotnet build ./src/UpForGrabber.sln --configuration $(buildConfiguration)
   displayName: 'dotnet build $(buildConfiguration)'
