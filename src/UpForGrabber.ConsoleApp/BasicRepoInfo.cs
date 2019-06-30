@@ -34,6 +34,9 @@ namespace UpForGrabber.ConsoleApp
         public string Url {get;}
         public DateTimeOffset? ClosedAt {get;}
 
+        public bool Closed => ClosedAt.HasValue;
+        public bool Updated => UpdatedAt.HasValue;
+
         public IssueInfo(long issueId, DateTimeOffset? updatedAt, string url, DateTimeOffset? closedAt)
         {
             IssueId = issueId;
