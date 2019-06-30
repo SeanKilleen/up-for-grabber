@@ -43,6 +43,10 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 _githubClient.Tell(new Messages.Messages.GetIssueCountPerLabel(_repoInfo.RepoId, _repoInfo.RepoFullName, _upForGrabsLabels));
             });
+
+            Receive<Messages.Messages.LabelsAndIssuesResponse>(msg => {
+                
+            });
         }
 
         private static bool LabelIsPotentiallyUpForGrabs(string name)
