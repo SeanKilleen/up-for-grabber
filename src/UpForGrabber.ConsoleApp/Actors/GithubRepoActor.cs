@@ -41,7 +41,7 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 _upForGrabsLabels = matchingLabels;
 
-                _githubClient.Tell(new Messages.Messages.GetIssueCountPerLabel(_repoInfo.RepoId, _upForGrabsLabels));
+                _githubClient.Tell(new Messages.Messages.GetIssueCountPerLabel(_repoInfo.RepoId, _repoInfo.RepoFullName, _upForGrabsLabels));
             });
         }
 

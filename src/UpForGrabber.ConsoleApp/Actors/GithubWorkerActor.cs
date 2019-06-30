@@ -72,6 +72,7 @@ namespace UpForGrabber.ConsoleApp.Actors
                     result.Add(label, count);
                 }
 
+                //TODO: Send a message somewhere else nd move the logging there
                 _logger.Info("Found {IssueCount} issues across up for grabs labels for {RepoId}", result.Values.Sum(), msg.RepoId);
 
                 CheckApiLimits(_apiClient.GetLastApiInfo());
