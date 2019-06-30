@@ -80,12 +80,16 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 var totalCount = result.Sum(x=>x.Value.Count);
 
-                //TODO: Send a message somewhere else nd move the logging there
-                _logger.Info("Found {IssueCount} issues across up for grabs labels for {RepoId} / {RepoFullName}", totalCount, msg.RepoId, msg.RepoFullName);
-
                 CheckApiLimits(_apiClient.GetLastApiInfo());
 
-                Sender.Tell(new Messages.Messages.LabelsAndIssuesResponse(result));
+                if(result.Any())
+                {
+                    Sender.Tell(new Messages.Messages.LabelsAndIssuesResponse(result));
+                }
+                else
+                {
+                    _logger.Info("No relevant issues found for  {RepoId} / {RepoFullName}. Ends here.", msg.RepoId, msg.RepoFullName);
+                }
             });
         }
 
