@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Akka.Actor;
 using Akka.Event;
@@ -116,6 +117,8 @@ namespace UpForGrabber.ConsoleApp.Actors
             {
                 _logger.Info("Retrieving repos for {OrgName} org", msg.OrgName);
 
+                var results = new List<Repository>();
+
                 int lastResultCount;
                 var page = 1;
                 do
@@ -137,9 +140,13 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                     _logger.Info("After filtering, there are {EligibleRepoCount} eligible repos for {OrgName} on page {PageNumber}", eligibleRepos.Count, msg.OrgName, page);
 
+                    results.AddRange(eligibleRepos);
+
                     page++;
                     lastResultCount = repos.Count;
                 } while (lastResultCount != 0);
+
+                _logger.Info("total eligible repos: {TotalEligibleRepoCount}", results.Count);
             });
         }
 
