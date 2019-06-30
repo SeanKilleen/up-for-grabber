@@ -59,6 +59,8 @@ namespace UpForGrabber.ConsoleApp.Actors
             {
                 var req = new RepositoryIssueRequest();
                 msg.LabelsToCheck.ForEach(label => req.Labels.Add(label));
+                req.Filter = IssueFilter.All;
+                req.State = ItemStateFilter.All;
 
                 var issuesForLabels = await _apiClient.Issue.GetAllForRepository(msg.RepoId, req);
 
