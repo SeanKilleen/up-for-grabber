@@ -64,16 +64,21 @@ namespace UpForGrabber.ConsoleApp.Actors
 
                 var issuesForLabels = await _apiClient.Issue.GetAllForRepository(msg.RepoId, req);
 
-                var result = new Dictionary<string, int>();
+                var result = new Dictionary<string, List<IssueInfo>>();
 
                 foreach (var label in msg.LabelsToCheck)
                 {
-                    var count = issuesForLabels.Count(x => x.Labels.Any(labelItem => labelItem.Name.Equals(label, StringComparison.InvariantCultureIgnoreCase)));
-                    result.Add(label, count);
+                    var issueInfos = issuesForLabels
+                        .Where(issue => issue.Labels.Any(labelItem => labelItem.Name.Equals(label, StringComparison.InvariantCultureIgnoreCase)))
+                        .Select(issue => new IssueInfo(issue.Id, issue.UpdatedAt, issue.Url, issue.ClosedAt)).ToList();
+
+                    result[label] = issueInfos;
                 }
 
+                var totalCount = result.Sum(x=>x.Value.Count);
+
                 //TODO: Send a message somewhere else nd move the logging there
-                _logger.Info("Found {IssueCount} issues across up for grabs labels for {RepoId} / {RepoFullName}", result.Values.Sum(), msg.RepoId, msg.RepoFullName);
+                _logger.Info("Found {IssueCount} issues across up for grabs labels for {RepoId} / {RepoFullName}", totalCount, msg.RepoId, msg.RepoFullName);
 
                 CheckApiLimits(_apiClient.GetLastApiInfo());
             });

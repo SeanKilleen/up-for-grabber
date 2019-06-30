@@ -26,4 +26,20 @@ namespace UpForGrabber.ConsoleApp
             LastUpdated = lastUpdated;
         }
     }
+
+    public class IssueInfo
+    {
+        public long IssueId {get;}
+        public DateTimeOffset? UpdatedAt {get;}
+        public string Url {get;}
+        public DateTimeOffset? ClosedAt {get;}
+
+        public IssueInfo(long issueId, DateTimeOffset? updatedAt, string url, DateTimeOffset? closedAt)
+        {
+            IssueId = issueId;
+            UpdatedAt = updatedAt;
+            Url = url;
+            ClosedAt = closedAt;
+        }
+    }
 }
