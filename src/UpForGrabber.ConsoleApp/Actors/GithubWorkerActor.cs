@@ -80,7 +80,11 @@ namespace UpForGrabber.ConsoleApp.Actors
 
         private static bool RepositoryIsUpdatedWithin90Days(Repository x)
         {
-            return (DateTimeOffset.UtcNow - x.UpdatedAt) < TimeSpan.FromDays(90);
+            var utcNow = DateTimeOffset.UtcNow;
+            var ninetyDays = TimeSpan.FromDays(90);
+
+            return (utcNow - x.UpdatedAt) < ninetyDays
+                   || (utcNow - x.PushedAt) < ninetyDays;
         }
 
         private void Paused()
