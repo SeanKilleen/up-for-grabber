@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Akka.Configuration;
 using Microsoft.Extensions.Configuration;
 
 namespace UpForGrabber.ConsoleApp
