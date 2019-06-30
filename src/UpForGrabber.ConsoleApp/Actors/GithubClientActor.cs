@@ -22,44 +22,12 @@ namespace UpForGrabber.ConsoleApp.Actors
             var actorsList = Constants.GetPeopleAndTokens().Select(pt => Context.ActorOf(Propmaster.GithubWorkerActor(pt.Value), pt.Key)).ToList();
             _githubWorkerActor = Context.ActorOf(Props.Empty.WithRouter(routerConfig: new RoundRobinGroup(actorsList.Select(x=>x.Path.ToString()).ToList())), "githubWorker");
 
-            Receive<Messages.LogRequestsMadeSoFar>(m =>
+            Receive<Messages.Messages.LogRequestsMadeSoFar>(m =>
             {
                 _logger.Info("So far, we've queued {numberOfGithubRequests} requests to the Github API", _numberOfGithubRequestsMade);
             });
 
-            Receive<Messages.GetPagedRepositoryContributors>(m =>
-            {
-                _numberOfGithubRequestsMade++;
-                _githubWorkerActor.Forward(m);
-            });
-            Receive<Messages.GetMembersOfGithubOrg>(m =>
-            {
-                _numberOfGithubRequestsMade++;
-                _githubWorkerActor.Forward(m);
-            });
-
-            Receive<Messages.GetForksForUser>(m =>
-            {
-                _numberOfGithubRequestsMade++;
-                _githubWorkerActor.Forward(m);
-            });
-
-            Receive<Messages.GetPagedRepoPullRequests>(m =>
-            {
-                _numberOfGithubRequestsMade++;
-                _githubWorkerActor.Forward(m);
-            });
-
-            Receive<Messages.RetrieveSourceReposForForks>(m =>
-            {
-                foreach (var fork in m.Forks)
-                {
-                    _numberOfGithubRequestsMade++;
-                    _githubWorkerActor.Tell(new Messages.GetSourceForFork(fork), Sender);
-                }
-            });
-
-            Receive<Messages.RetrieveRepos>(msg =>
+            Receive<Messages.Messages.RetrieveRepos>(msg =>
             {
                 _numberOfGithubRequestsMade++;
                 _githubWorkerActor.Forward(msg);
@@ -67,7 +35,7 @@ namespace UpForGrabber.ConsoleApp.Actors
 
             _logger.Info("GithubClientActor created and sitting at {clientActorPath}", Self.Path);
             _logger.Info("Scheduling messages every 5 seconds to tell us how many requests we've made so far.", Self.Path);
-            Context.System.Scheduler.ScheduleTellRepeatedly(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5), Self, new Messages.LogRequestsMadeSoFar(), Self);
+            Context.System.Scheduler.ScheduleTellRepeatedly(TimeSpan.FromSeconds(0), TimeSpan.FromSeconds(5), Self, new Messages.Messages.LogRequestsMadeSoFar(), Self);
         }
     }
 }
