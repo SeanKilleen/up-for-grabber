@@ -70,7 +70,7 @@ namespace UpForGrabber.ConsoleApp.Actors
                 {
                     var issueInfos = issuesForLabels
                         .Where(issue => issue.Labels.Any(labelItem => labelItem.Name.Equals(label, StringComparison.InvariantCultureIgnoreCase)))
-                        .Select(issue => new IssueInfo(issue.Id, issue.UpdatedAt, issue.Url, issue.ClosedAt)).ToList();
+                        .Select(issue => new IssueInfo(issue.Id, issue.UpdatedAt, issue.Url, issue.ClosedAt, issue.CreatedAt)).ToList();
 
                     result[label] = issueInfos;
                 }

@@ -45,8 +45,26 @@ namespace UpForGrabber.ConsoleApp.Actors
             });
 
             Receive<Messages.Messages.LabelsAndIssuesResponse>(msg => {
-                
+                var countsPerLabel = msg.LabelsAndIssues.ToDictionary(k => k.Key, v => v.Value.Count);
+                var mostRecentIssuePerLabel = msg.LabelsAndIssues.ToDictionary(k => k.Key, v => SelectLatestDate(v.Value));
+                // TODO: Most recent label updated and when
+                // TODO: Number of Stars & 
             });
+        }
+
+        private DateTimeOffset SelectLatestDate(List<IssueInfo> items){
+            return items
+                .Select(x=> {
+                    if (x.Updated) 
+                    {
+                        return x.UpdatedAt.Value;
+                    } 
+                    else 
+                    {
+                        return x.CreatedAt;
+                    }})
+                .OrderByDescending(x => x)
+                .First();
         }
 
         private static bool LabelIsPotentiallyUpForGrabs(string name)
