@@ -30,3 +30,31 @@ You'll need to:
 * Set the constant variable for the org you want to check (we'll extract this to a setting at some point)
 * Build / run the console app. Kill it off when it looks like it's done.
 * Check out the logging output in Seq, where you can query it for numbers etc.
+
+## How the Actor Model is used
+
+The hierarchy is generally:
+
+```
+/user
+   /githubClientActor
+       /githubWorkerActor
+       /githubWorkerActor
+   /githubOrgActor (e.g. "dotnet")
+       /githubRepoActor (e.g. "BenchmarkDotNet")
+       /githubRepoActor (e.g. "winforms")
+   /githubOrgActor (e.g. "microsoft")
+       /githubRepoActor (e.g. "terminal")
+       /githubRepoActor (e.g. "winfile")
+```
+
+How it works:
+
+* The app creates a top-level `githubClient` that creates worker child actors that it actually farms out requests to in a round-robin fashion. The client actor also tracks how many requests we've made to GitHub so far.
+* Each of the github worker actors keeps track of how many requests remain for that API key. If the number of requests gets low, it will "become paused", stash all incoming messages, and schedule a message to resume later when the API key rate limits are reset.
+* The application creates a top-level `githubOrganizationActor`. When it's created, it looks for all the repos in that organization, and creates a child `githubRepoActor` for each one. 
+* Those actors in turn start looking for up-for-grabs labels on the repo and processing information.
+* The apps all make requests to the githubClient actor, which forwards the request to the children, who then respond directly to the calling actor.
+* We output the information about repositories using structured logging that outputs via Serilog to Seq, where we can query it.
+
+So in this way, we could easily adapt to multiple organizations, just by creating additional top-level organization actors; the rest would take care of itself. 
